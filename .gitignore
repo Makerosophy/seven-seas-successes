@@ -1,0 +1,19 @@
+# Ignora artefatti di compilazione
+/target/
+
+# Ignora file di log
+**/*.log
+
+# Ignora file di swap e backup dell'editor
+*.swp
+*.bak
+
+# Ignora file generati da Cargo
+/.cargo/
+
+# Ignora configurazioni IDE
+.idea/
+.vscode/
+
+# Altri file inutili
+*.rs.bk
