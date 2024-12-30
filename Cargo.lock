@@ -89,7 +89,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "seven_sea"
+name = "seven_seas_successes"
 version = "0.1.0"
 dependencies = [
  "rand",
