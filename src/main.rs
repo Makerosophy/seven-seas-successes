@@ -1,6 +1,7 @@
 use rand::Rng;
 use std::io::{self, Write};
 
+//TODO: Aggiungere backend Rocket
 /// Trova il massimo numero di Raises (successi)
 fn massimizza_raises(dadi: Vec<u8>) -> (usize, Vec<Vec<u8>>) {
     let mut raises = 0;
