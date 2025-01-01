@@ -1,0 +1,18 @@
+[tasks.backend]
+description = "Avvia il backend con Rocket"
+command = "cargo"
+args = ["run"]
+cwd = "backend"
+
+[tasks.frontend]
+description = "Avvia il frontend con Trunk"
+command = "trunk"
+args = ["serve"]
+cwd = "frontend"
+
+[tasks.start]
+description = "Avvia sia il backend che il frontend"
+script = [
+    "cargo make backend &",
+    "cargo make frontend"
+]
