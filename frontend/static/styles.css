@@ -1,66 +1,166 @@
+/* Corpo della pagina */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
-    color: #333;
+    font-family: 'Cinzel', serif; /* Font principale */
+    background: linear-gradient(to bottom right, #fdf5e6, #f5ebdc); /* Sfondo pergamenato */
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    color: #876c55; /* Colore bronzo per il testo */
+    box-sizing: border-box;
 }
 
+/* Contenitore principale */
 .container {
-    max-width: 600px;
-    margin: 50px auto;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
     padding: 20px;
-    background: #fff;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
 }
 
-h1, h2 {
-    color: #444;
+/* Titolo */
+h1 {
+    font-size: 3em;
+    color: #282828; /* Un grigio scuro per il contrasto */
+    margin-bottom: 20px;
+    margin-top: 10px; /* Ridotto il margine superiore */
     text-align: center;
+    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Leggero effetto di ombra */
 }
 
-button {
-    background: #007BFF;
-    color: #fff;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-top: 10px;
+/* Input e Label */
+label {
+    display: block;
+    font-weight: bold;
+    margin: 10px 0;
+    text-align: left;
+    width: 100%;
+    max-width: 500px;
+    color: #876c55;
 }
 
-button:hover {
-    background: #0056b3;
+.input-container {
+    width: 100%;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 10px 0;
 }
 
 input[type="number"] {
     width: 100%;
     padding: 10px;
-    margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 16px;
+    border: 2px solid #876c55; /* Colore bronzo */
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box;
+    background-color: #fdf5e6;
+    color: #282828;
+    text-align: center;
 }
 
-label {
-    display: block;
-    margin-top: 10px;
-    font-weight: bold;
-}
-
+/* Checkbox */
 .checkbox-container {
-    margin: 15px 0;
+    margin: 20px 0;
+    text-align: left;
+    width: 100%;
+    max-width: 500px;
 }
 
+.checkbox-container input {
+    margin-right: 10px;
+}
+
+/* Pulsanti */
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    margin: 10px;
+    width: 100%;
+    max-width: 300px;
+    box-sizing: border-box;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5); /* Effetto di ombra */
+    transition: background 0.3s ease, color 0.3s ease;
+}
+
+.roll-button {
+    background: #3b5998; /* Blu marina */
+    color: #fdf5e6; /* Pergamena */
+    font-family: 'Cinzel', serif;
+}
+
+.reset-button {
+    background: #8b4513; /* Marrone cuoio */
+    color: #fdf5e6; /* Pergamena */
+    font-family: 'Cinzel', serif;
+}
+
+.reroll-button {
+    background: #d4af37; /* Oro brillante */
+    color: #282828; /* Grigio scuro */
+    font-family: 'Cinzel', serif;
+}
+
+button:disabled {
+    background: #e0e0e0; /* Grigio chiaro */
+    color: #a0a0a0; /* Grigio tenue per il testo */
+    cursor: not-allowed;
+    text-shadow: none;
+    font-family: 'Cinzel', serif;
+}
+
+/* Risultati */
 .results {
     margin-top: 20px;
+    text-align: center;
+    width: 100%;
+    max-width: 600px;
+}
+
+.results h2 {
+    color: #282828;
+    font-size: 2.5em; /* Maggiore evidenza per il numero dei successi */
+    margin-bottom: 15px;
 }
 
 .results p {
-    background: #f9f9f9;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    margin: 5px 0;
+    color: #555;
+}
+
+.results .success-count {
+    color: #d4af37; /* Oro brillante */
+    font-size: 2em;
+    font-weight: bold;
+}
+
+/* Media Query per la responsività */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2em;
+    }
+
+    .container {
+        padding: 0;
+    }
+
+    input[type="number"],
+    button {
+        width: 100%;
+    }
+
+    .results {
+        width: 100%;
+    }
 }

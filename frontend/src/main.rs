@@ -2,7 +2,7 @@ use serde::{Deserialize, Serialize};
 use wasm_bindgen_futures::spawn_local;
 use yew::prelude::*;
 use gloo_net::http::Request;
-use web_sys::HtmlInputElement; // Import necessario per gestire gli input
+use web_sys::HtmlInputElement;
 
 #[derive(Serialize, Deserialize, Debug, Clone)]
 struct DiceRequest {
@@ -37,6 +37,17 @@ fn app() -> Html {
     let rilancia_uno = use_state(|| false);
     let results = use_state(|| None::<RollWithRerollResponse>);
     let loading = use_state(|| false);
+
+    let reset_app = {
+        let num_dadi = num_dadi.clone();
+        let rilancia_uno = rilancia_uno.clone();
+        let results = results.clone();
+        Callback::from(move |_| {
+            num_dadi.set(5);
+            rilancia_uno.set(false);
+            results.set(None);
+        })
+    };
 
     let handle_roll = {
         let results = results.clone();
@@ -98,7 +109,6 @@ fn app() -> Html {
         let results = results.clone();
         Callback::from(move |_| {
             if let Some(result) = (*results).clone() {
-                // Cloniamo i dati necessari per avere il lifetime `'static`
                 let risultati_clonati = result.risultati_aggiornati.clone();
                 let results_clonati = results.clone();
                 let originali_clonati = result.risultati_originali.clone();
@@ -115,7 +125,7 @@ fn app() -> Html {
                             if let Ok(data) = response.json::<DiceResponse>().await {
                                 results_clonati.set(Some(RollWithRerollResponse {
                                     risultati_originali: originali_clonati,
-                                    rilanciato: None,
+                                    rilanciato: Some(data.risultati.last().copied().unwrap_or(0)),
                                     risultati_aggiornati: data.risultati,
                                     raises: data.raises,
                                     combinazioni: data.combinazioni,
@@ -131,9 +141,9 @@ fn app() -> Html {
 
     html! {
         <div class="container">
-            <h1>{ "Calcola i successi in 7th Seas" }</h1>
-            <div>
-                <label>{ "Numero di dadi:" }</label>
+            <h1>{ "Gestione successi in 7th Sea" }</h1>
+            <div class="input-container">
+                <label>{ "Seleziona il numero di dadi da lanciare:" }</label>
                 <input type="number"
                     value={num_dadi.to_string()}
                     oninput={Callback::from(move |e: InputEvent| {
@@ -147,12 +157,16 @@ fn app() -> Html {
                 <label>
                     <input type="checkbox"
                         checked={*rilancia_uno}
-                        onchange={Callback::from(move |_| rilancia_uno.set(!*rilancia_uno))}
+                        onchange={Callback::from({
+                            let rilancia_uno = rilancia_uno.clone();
+                            move |_| rilancia_uno.set(!*rilancia_uno)
+                        })}
                     />
-                    { "Rilancia uno dei dadi con valore 1 automaticamente" }
+                    { "Rilancia automaticamente" }
                 </label>
             </div>
-            <button onclick={handle_roll} disabled={*loading}>{ "Lancia i dadi" }</button>
+            <button class="roll-button" onclick={handle_roll} disabled={*loading}>{ "Roll" }</button>
+            <button class="reset-button" onclick={reset_app.clone()}>{ "Reset" }</button>
             {
                 if let Some(result) = &*results {
                     html! {
@@ -161,23 +175,32 @@ fn app() -> Html {
                             <p>{ format!("Dadi originali: {:?}", result.risultati_originali) }</p>
                             {
                                 if let Some(rilanciato) = result.rilanciato {
-                                    html! { <p>{ format!("Rilanciato: {}", rilanciato) }</p> }
+                                    html! {
+                                        <>
+                                            <p>{ format!("Rilanciato: {}", rilanciato) }</p>
+                                            <p>{ format!("Dadi aggiornati: {:?}", result.risultati_aggiornati) }</p>
+                                        </>
+                                    }
                                 } else {
-                                    html! { <p>{ "Nessun dado rilanciato" }</p> }
+                                    html! {}
                                 }
                             }
-                            <p>{ format!("Dadi aggiornati: {:?}", result.risultati_aggiornati) }</p>
-                            <p>{ format!("Successi (Raises): {}", result.raises) }</p>
+                            <p class="success-count">{ format!("Successi (Raises): {}", result.raises) }</p>
                             <p>{ format!("Combinazioni: {:?}", result.combinazioni) }</p>
-                            <button onclick={handle_reroll}>{ "Rilancia un dado da 1" }</button>
+                            <button class="reroll-button"
+                                onclick={handle_reroll}
+                                disabled={*rilancia_uno || !result.risultati_aggiornati.contains(&1)}
+                            >
+                                { "Ritira un dado da 1" }
+                            </button>
                         </div>
                     }
                 } else {
-                    html! { <p>{ "Premi il pulsante per lanciare i dadi." }</p> }
+                    html! { <p>{ "Pronto a iniziare la tua avventura?" }</p> }
                 }
             }
         </div>
-    }    
+    }
 }
 
 fn main() {
