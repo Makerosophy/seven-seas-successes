@@ -1,24 +1,9 @@
 # Trunk Configuration File
 
-# Specifica il file HTML principale
 [build]
-target = "index.html"  # Assicurati che esista nella root del progetto
-release = true
+# Specifica il file HTML principale
+target = "index.html"
 
-# Includi file e asset statici
 [build.static]
-# Specifica la directory che contiene i file statici
+# Directory che contiene file statici (opzionale)
 dir = "static"
-# Aggiungi eventuali regole per includere file specifici
-include = ["styles.css", "images/**"]
-
-# Configurazione per il server locale per lo sviluppo
-[serve]
-host = "localhost"
-port = 8080
-watch = true
-open = true
-
-# Configurazione per WebAssembly
-[build.wasm]
-opt_level = "z"  # Ottimizza per dimensioni ridotte

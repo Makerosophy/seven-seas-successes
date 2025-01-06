@@ -13,7 +13,6 @@ echo "Installing Rust..."
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --no-modify-path
 
 # Aggiungi Cargo al PATH manualmente
-echo "Adding Cargo to PATH..."
 . "$CARGO_HOME/env"
 
 # Verifica l'installazione di Rust e Cargo
@@ -25,9 +24,14 @@ cargo --version
 echo "Installing Trunk..."
 cargo install trunk
 
+# Passa alla directory frontend
+cd frontend || exit
+
+# Debug: verifica la configurazione di Trunk
+echo "Checking Trunk configuration..."
+ls -la Trunk.toml
+ls -la index.html
+
 # Costruisci il progetto con Trunk
 echo "Building the project..."
-trunk build --release --dist frontend/dist
-
-echo "Contents of frontend/dist:"
-ls -la frontend/dist
+trunk build --release --dist dist
