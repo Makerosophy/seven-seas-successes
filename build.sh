@@ -20,6 +20,14 @@ echo "Verifying Rust installation..."
 rustc --version
 cargo --version
 
+# Installa il target WebAssembly
+echo "Adding wasm32-unknown-unknown target..."
+rustup target add wasm32-unknown-unknown
+
+# Debug: verifica i target installati
+echo "Installed targets:"
+rustup target list --installed
+
 # Installa Trunk
 echo "Installing Trunk..."
 cargo install trunk
