@@ -3,6 +3,7 @@
 # Specifica il file HTML principale
 [build]
 target = "index.html"
+release = true
 
 # Configura il percorso di output
 dist = "dist"
