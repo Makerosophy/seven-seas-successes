@@ -9,9 +9,9 @@ PATH=$CARGO_HOME/bin:$PATH
 echo "Installing Rust..."
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
 
-# Configura l'ambiente per usare Cargo
-echo "Sourcing Cargo environment..."
-. "$CARGO_HOME/env"
+# Aggiungi manualmente Cargo al PATH
+echo "Adding Cargo to PATH..."
+export PATH=$CARGO_HOME/bin:$PATH
 
 # Installa Trunk
 echo "Installing Trunk..."
