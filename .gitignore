@@ -15,5 +15,10 @@
 .idea/
 .vscode/
 
+
+# Ignora configurazione d'ambiente
+/frontend/.env
+/backend/.env
+
 # Altri file inutili
 *.rs.bk

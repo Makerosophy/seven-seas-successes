@@ -31,13 +31,21 @@ struct RollWithRerollResponse {
     combinazioni: Vec<Vec<u8>>,
 }
 
+#[derive(Serialize, Deserialize, Debug, Clone)]
+struct LoginRequest {
+    user_id: String,
+}
+
 #[function_component(App)]
 fn app() -> Html {
     let num_dadi = use_state(|| 5);
     let rilancia_uno = use_state(|| false);
     let results = use_state(|| None::<RollWithRerollResponse>);
     let loading = use_state(|| false);
+    let user_name = use_state(|| String::new());
+    let token = use_state(|| None::<String>);
 
+    // Funzione per resettare lo stato dell'app
     let reset_app = {
         let num_dadi = num_dadi.clone();
         let rilancia_uno = rilancia_uno.clone();
@@ -49,15 +57,57 @@ fn app() -> Html {
         })
     };
 
+    // Gestione del login per ottenere il token
+    let handle_login = {
+        let user_name = user_name.clone();
+        let token = token.clone();
+
+        Callback::from(move |_| {
+            let user_name = user_name.clone();
+            let token = token.clone();
+
+            spawn_local(async move {
+                let body = LoginRequest {
+                    user_id: (*user_name).clone(),
+                };
+
+                match Request::post("http://localhost:8000/login")
+                    .header("Content-Type", "application/json")
+                    .body(serde_json::to_string(&body).unwrap())
+                    .unwrap()
+                    .send()
+                    .await
+                {
+                    Ok(response) => {
+                        if let Ok(jwt) = response.text().await {
+                            token.set(Some(jwt));
+                        } else {
+                            log::error!("Errore nel parsing del token");
+                        }
+                    }
+                    Err(err) => log::error!("Errore durante il login: {:?}", err),
+                }
+            });
+        })
+    };
+
+    // Funzione per lanciare i dadi
     let handle_roll = {
         let results = results.clone();
         let loading = loading.clone();
         let num_dadi = *num_dadi;
         let rilancia_uno = *rilancia_uno;
+        let token = token.clone();
 
         Callback::from(move |_| {
+            if token.is_none() {
+                log::error!("Effettua il login prima di lanciare i dadi.");
+                return;
+            }
+
             let results = results.clone();
             let loading = loading.clone();
+            let token = token.clone();
 
             spawn_local(async move {
                 loading.set(true);
@@ -75,6 +125,13 @@ fn app() -> Html {
                 };
 
                 match Request::post(url)
+                    .header(
+                        "Authorization",
+                        &format!(
+                            "Bearer {}",
+                            token.as_ref().unwrap()
+                        ),
+                    )
                     .header("Content-Type", "application/json")
                     .body(request_body)
                     .unwrap()
@@ -105,16 +162,32 @@ fn app() -> Html {
         })
     };
 
+    // Funzione per rilanciare i dadi da 1
     let handle_reroll = {
         let results = results.clone();
+        let token = token.clone();
+
         Callback::from(move |_| {
+            if token.is_none() {
+                log::error!("Effettua il login prima di rilanciare un dado.");
+                return;
+            }
+
             if let Some(result) = (*results).clone() {
                 let risultati_clonati = result.risultati_aggiornati.clone();
                 let results_clonati = results.clone();
                 let originali_clonati = result.risultati_originali.clone();
+                let token = token.clone();
 
                 spawn_local(async move {
                     match Request::post("http://localhost:8000/reroll")
+                        .header(
+                            "Authorization",
+                            &format!(
+                                "Bearer {}",
+                                token.as_ref().unwrap()
+                            ),
+                        )
                         .header("Content-Type", "application/json")
                         .json(&serde_json::json!({ "risultati": risultati_clonati }))
                         .unwrap()
@@ -142,6 +215,18 @@ fn app() -> Html {
     html! {
         <div class="container">
             <h1>{ "Gestione successi in 7th Sea" }</h1>
+            <div class="login-container">
+                <label>{ "Inserisci il tuo nome utente:" }</label>
+                <input
+                    type="text"
+                    value={(*user_name).clone()}
+                    oninput={Callback::from(move |e: InputEvent| {
+                        let input: HtmlInputElement = e.target_unchecked_into();
+                        user_name.set(input.value());
+                    })}
+                />
+                <button class="login-button" onclick={handle_login}>{ "Conferma Nome" }</button>
+            </div>
             <div class="input-container">
                 <label>{ "Seleziona il numero di dadi da lanciare:" }</label>
                 <input type="number"
@@ -166,7 +251,7 @@ fn app() -> Html {
                 </label>
             </div>
             <button class="roll-button" onclick={handle_roll} disabled={*loading}>{ "Roll" }</button>
-            <button class="reset-button" onclick={reset_app.clone()}>{ "Reset" }</button>
+            <button class="reset-button" onclick={reset_app}>{ "Reset" }</button>
             {
                 if let Some(result) = &*results {
                     html! {
