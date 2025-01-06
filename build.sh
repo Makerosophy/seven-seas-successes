@@ -28,3 +28,6 @@ cargo install trunk
 # Costruisci il progetto con Trunk
 echo "Building the project..."
 trunk build --release --dist frontend/dist
+
+echo "Contents of frontend/dist:"
+ls -la frontend/dist
