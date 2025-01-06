@@ -1,13 +1,11 @@
 {
-    "functions": {
-      "backend/src/main.rs": {
-        "runtime": "vercel-rust@4.0.8"
-      }
-    },
     "builds": [
       {
-        "src": "frontend/dist/**",
-        "use": "@vercel/static"
+        "src": "frontend/Cargo.toml",
+        "use": "@vercel/static-build",
+        "config": {
+          "distDir": "frontend/dist"
+        }
       },
       {
         "src": "backend/src/main.rs",
