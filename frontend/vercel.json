@@ -1,0 +1,22 @@
+{
+    "functions": {
+      "backend/src/main.rs": {
+        "runtime": "vercel-rust@4.0.8"
+      }
+    },
+    "builds": [
+      {
+        "src": "frontend/dist/**",
+        "use": "@vercel/static"
+      },
+      {
+        "src": "backend/src/main.rs",
+        "use": "@vercel/rust"
+      }
+    ],
+    "routes": [
+      { "src": "/api/(.*)", "dest": "/backend/src/main.rs" },
+      { "src": "/(.*)", "dest": "/frontend/dist/$1" }
+    ]
+  }
+  
