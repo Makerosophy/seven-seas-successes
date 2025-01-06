@@ -2,11 +2,8 @@
 
 # Specifica il file HTML principale
 [build]
-target = "index.html"
+target = "index.html"  # Assicurati che esista nella root del progetto
 release = true
-
-# Configura il percorso di output
-dist = "dist"
 
 # Includi file e asset statici
 [build.static]
@@ -15,7 +12,7 @@ dir = "static"
 # Aggiungi eventuali regole per includere file specifici
 include = ["styles.css", "images/**"]
 
-# Configura il server locale per lo sviluppo
+# Configurazione per il server locale per lo sviluppo
 [serve]
 host = "localhost"
 port = 8080
