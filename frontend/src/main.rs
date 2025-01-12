@@ -260,7 +260,7 @@ fn app() -> Html {
 
     html! {
         <div class="container">
-            <h1>{ "Gestione successi in 7th Sea (senza backend)" }</h1>
+            <h1>{ "Gestione successi in 7th Sea" }</h1>
 
             <div class="input-container">
                 <label>{ "Seleziona il numero di dadi da lanciare:" }</label>
